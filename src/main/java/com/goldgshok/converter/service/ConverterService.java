@@ -12,6 +12,7 @@ import org.apache.sanselan.Sanselan;
 import org.springframework.boot.convert.Delimiter;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,16 +43,32 @@ public class ConverterService {
 			try (PDDocument document = new PDDocument()) {
 				for (String imageName : imageNames) {
 					File file = new File(path + imageName);
-					PDPage page = getPage(file);
+					ImageInfo imageInfo = Sanselan.getImageInfo(file);
+					int width = imageInfo.getWidth();
+					int height = imageInfo.getHeight();
+					boolean isHorizontal = width > height;
+
+					PDPage page = getPage(isHorizontal);
 					document.addPage(page);
+
+					Dimension pageDim;
+					if (isHorizontal) {
+						pageDim = new Dimension((int) PDRectangle.A4.getHeight(), (int) PDRectangle.A4.getWidth());
+					} else {
+						pageDim = new Dimension((int) PDRectangle.A4.getWidth(), (int) PDRectangle.A4.getHeight());
+					}
+					Dimension imageDim = new Dimension(width, height);
+
+					Dimension scaledDim = getScaledDimension(imageDim, pageDim);
 
 					PDImageXObject image = PDImageXObject.createFromFileByContent(file, document);
 					PDPageContentStream contentStream = new PDPageContentStream(document, page);
-					contentStream.drawImage(image, 0, 0);
+					contentStream.drawImage(image, 0, 0, scaledDim.width, scaledDim.height);
 					contentStream.close();
 				}
 				String fileName = String.format("%s%s.pdf", outputPath, directory.getName());
 				document.save(fileName);
+				log.info("File {} created", fileName);
 			} catch (Exception e) {
 				log.error("Error generation pdf for {}", directory.getName());
 			}
@@ -72,12 +89,9 @@ public class ConverterService {
 		return sortedImages;
 	}
 
-	private PDPage getPage(File file) throws Exception {
-		ImageInfo imageInfo = Sanselan.getImageInfo(file);
-		int width = imageInfo.getWidth();
-		int height = imageInfo.getHeight();
+	private PDPage getPage(boolean isHorizontal) {
 		PDRectangle layout;
-		if (width > height) {
+		if (isHorizontal) {
 			layout = new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth());
 		} else {
 			layout = PDRectangle.A4;
@@ -92,5 +106,28 @@ public class ConverterService {
 		} else {
 			return diff;
 		}
+	}
+
+	public static Dimension getScaledDimension(Dimension imgSize, Dimension page) {
+		int originalWidth = imgSize.width;
+		int originalHeight = imgSize.height;
+		int pageWidth = page.width;
+		int pageHeight = page.height;
+
+		int newWidth = originalWidth;
+		int newHeight = originalHeight;
+
+		if (originalWidth > pageWidth) {
+			newWidth = pageWidth;
+			newHeight = (newWidth * originalHeight) / originalWidth;
+		}
+
+
+		if (newHeight > pageHeight) {
+			newHeight = pageHeight;
+			newWidth = (newHeight * originalWidth) / originalHeight;
+		}
+
+		return new Dimension(newWidth, newHeight);
 	}
 }
