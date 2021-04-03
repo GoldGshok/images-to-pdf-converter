@@ -9,7 +9,5 @@ public class ConvertRequest {
 	private String inputFolderPath;
 	@Schema(description = "Начальная страница для поиска картинок", example = "D://temp", required = true)
 	private String outputFolderPath;
-	@Schema(description = "Расширение у картинок", example = ".jpg", required = true)
-	private String extension;
 
 }

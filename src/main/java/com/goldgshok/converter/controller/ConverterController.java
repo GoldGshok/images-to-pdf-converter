@@ -20,7 +20,7 @@ public class ConverterController {
 
     @PostMapping("/convert")
     @Operation(summary = "Конвертация картинок в PDF файл")
-    public void downloadImages(@RequestBody ConvertRequest request) {
+    public void convert(@RequestBody ConvertRequest request) {
         converter.convert(request);
     }
 

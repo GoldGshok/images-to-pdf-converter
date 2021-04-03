@@ -7,13 +7,16 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.sanselan.ImageInfo;
+import org.apache.sanselan.Sanselan;
+import org.springframework.boot.convert.Delimiter;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -21,54 +24,73 @@ public class ConverterService {
 
 	public void convert(ConvertRequest request) {
 		File file = new File(request.getInputFolderPath());
-		File[] dirs = file.listFiles(this::filterDirs);
+		File[] dirs = file.listFiles(File::isDirectory);
 
-		String extension = request.getExtension();
-		if (dirs != null) {
+		if (dirs != null && dirs.length > 0) {
 			for (File dir : dirs) {
-				createPdf(dir, request.getOutputFolderPath(), extension);
+				createPdf(dir, request.getOutputFolderPath());
 			}
 		} else {
-			createPdf(file, request.getOutputFolderPath(), extension);
+			createPdf(file, request.getOutputFolderPath());
 		}
 	}
 
-	private boolean filterDirs(File file) {
-		return file.isDirectory();
-	}
-
-	private void createPdf(File directory, String outputPath, String extension) {
-		String[] images = directory.list((dir, name) -> name.endsWith(extension));
-
-		if (images != null) {
+	private void createPdf(File directory, String outputPath) {
+		String path = directory.getPath() + File.separator;
+		List<String> imageNames = getImageNames(directory);
+		if (!imageNames.isEmpty()) {
 			try (PDDocument document = new PDDocument()) {
-				for (String imagePath : images) {
-					File file = new File(imagePath);
-					BufferedImage bimg = ImageIO.read(file);
-					int width = bimg.getWidth();
-					int height = bimg.getHeight();
-					PDRectangle layout;
-					if (width > height) {
-						layout = new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth());
-					} else {
-						layout = PDRectangle.A4;
-					}
-					PDPage page = new PDPage(layout);
-
+				for (String imageName : imageNames) {
+					File file = new File(path + imageName);
+					PDPage page = getPage(file);
 					document.addPage(page);
 
-					Path path = Paths.get(file.toURI());
+					PDImageXObject image = PDImageXObject.createFromFileByContent(file, document);
 					PDPageContentStream contentStream = new PDPageContentStream(document, page);
-					PDImageXObject image
-							= PDImageXObject.createFromFile(path.toAbsolutePath().toString(), document);
 					contentStream.drawImage(image, 0, 0);
 					contentStream.close();
 				}
-				document.save(outputPath + directory.getName());
+				String fileName = String.format("%s%s.pdf", outputPath, directory.getName());
+				document.save(fileName);
 			} catch (Exception e) {
 				log.error("Error generation pdf for {}", directory.getName());
 			}
 		}
 	}
 
+	private List<String> getImageNames(File directory) {
+		String[] images = directory.list((dir, name) -> name.endsWith(".png")
+				|| name.endsWith(".jpg")
+				|| name.endsWith(".jpeg")
+				|| name.endsWith(".bmp"));
+		List<String> sortedImages = Collections.emptyList();
+		if (images != null) {
+			sortedImages = Arrays.stream(images)
+					.sorted(this::compareImageNames)
+					.collect(Collectors.toList());
+		}
+		return sortedImages;
+	}
+
+	private PDPage getPage(File file) throws Exception {
+		ImageInfo imageInfo = Sanselan.getImageInfo(file);
+		int width = imageInfo.getWidth();
+		int height = imageInfo.getHeight();
+		PDRectangle layout;
+		if (width > height) {
+			layout = new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth());
+		} else {
+			layout = PDRectangle.A4;
+		}
+		return new PDPage(layout);
+	}
+
+	public int compareImageNames(String o1, String o2) {
+		int diff = o1.length() - o2.length();
+		if (diff == 0) {
+			return o1.compareTo(o2);
+		} else {
+			return diff;
+		}
+	}
 }
