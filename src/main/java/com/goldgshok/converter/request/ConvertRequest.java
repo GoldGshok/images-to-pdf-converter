@@ -7,7 +7,9 @@ import lombok.Data;
 public class ConvertRequest {
 	@Schema(description = "Начальная страница для поиска картинок", example = "D://Books/", required = true)
 	private String inputFolderPath;
-	@Schema(description = "Начальная страница для поиска картинок", example = "D://", required = true)
+	@Schema(description = "Начальная страница для поиска картинок", example = "D://temp", required = true)
 	private String outputFolderPath;
+	@Schema(description = "Расширение у картинок", example = ".jpg", required = true)
+	private String extension;
 
 }
