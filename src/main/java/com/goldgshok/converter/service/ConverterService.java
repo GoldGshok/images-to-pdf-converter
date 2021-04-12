@@ -9,7 +9,6 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.sanselan.ImageInfo;
 import org.apache.sanselan.Sanselan;
-import org.springframework.boot.convert.Delimiter;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
