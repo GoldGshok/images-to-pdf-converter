@@ -13,6 +13,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -41,7 +42,7 @@ public abstract class BaseControllerTest {
     }
 
     @SneakyThrows
-    public final MvcResult makeRequest(String url, Object request) {
+    public final ResultActions makeRequest(String url, Object request) {
         var mockRequest = MockMvcRequestBuilders.post(url)
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
 
@@ -49,11 +50,6 @@ public abstract class BaseControllerTest {
             var body = objectMapper.writeValueAsString(request);
             mockRequest = mockRequest.content(body);
         }
-        var result = mvc.perform(mockRequest)
-                .andReturn();
-
-        assertNotNull(result);
-        assertNotNull(result.getResponse());
-        return result;
+        return mvc.perform(mockRequest);
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ConverterControllerTest extends BaseControllerTest {
 
@@ -23,5 +25,17 @@ class ConverterControllerTest extends BaseControllerTest {
         makeRequest("/api/converter/convert", request);
 
         verify(converterService).convert(any());
+    }
+
+    @Test
+    void convert_emptyRequest_throwException() throws Exception {
+        var request = new ConvertRequest();
+        request.setInputFolderPath("123");
+        request.setOutputFolderPath("456");
+
+        var result = makeRequest("/api/converter/convert", null);
+        result.andExpect(status().is4xxClientError());
+
+        verifyNoInteractions(converterService);
     }
 }
