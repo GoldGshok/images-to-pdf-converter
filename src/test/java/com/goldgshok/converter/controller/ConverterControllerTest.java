@@ -36,6 +36,17 @@ class ConverterControllerTest extends BaseControllerTest {
     }
 
     @Test
+    void convert_emptyOutputPath_throwException() throws Exception {
+        var request = new ConvertRequest();
+        request.setInputFolderPath("123");
+
+        var result = makeRequest("/api/converter/convert", null);
+        result.andExpect(status().is4xxClientError());
+
+        verifyNoInteractions(converterService);
+    }
+
+    @Test
     void convert_emptyInputPath_throwException() throws Exception {
         var request = new ConvertRequest();
         request.setOutputFolderPath("456");
