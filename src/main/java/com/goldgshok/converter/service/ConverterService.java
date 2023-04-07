@@ -83,7 +83,7 @@ public class ConverterService {
         if (images != null) {
             sortedImages = Arrays.stream(images)
                     .sorted(this::compareImageNames)
-                    .collect(Collectors.toList());
+                    .toList();
         }
         return sortedImages;
     }
