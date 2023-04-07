@@ -109,7 +109,7 @@ public class ConverterService {
 
     public static Dimension getScaledDimension(Dimension imgSize, Dimension page) {
         var originalWidth = imgSize.width;
-        int originalHeight = imgSize.height;
+        var originalHeight = imgSize.height;
         int pageWidth = page.width;
         int pageHeight = page.height;
 
