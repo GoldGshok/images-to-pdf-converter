@@ -40,7 +40,7 @@ public class ConverterService {
         List<String> imageNames = getImageNames(directory);
         if (!imageNames.isEmpty()) {
             try (var document = new PDDocument()) {
-                for (String imageName : imageNames) {
+                for (var imageName : imageNames) {
                     File file = new File(path + imageName);
                     ImageInfo imageInfo = Sanselan.getImageInfo(file);
                     var width = imageInfo.getWidth();
