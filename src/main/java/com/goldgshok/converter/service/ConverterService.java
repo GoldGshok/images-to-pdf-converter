@@ -42,7 +42,7 @@ public class ConverterService {
             try (var document = new PDDocument()) {
                 for (var imageName : imageNames) {
                     var file = new File(path + imageName);
-                    ImageInfo imageInfo = Sanselan.getImageInfo(file);
+                    var imageInfo = Sanselan.getImageInfo(file);
                     var width = imageInfo.getWidth();
                     var height = imageInfo.getHeight();
                     var isHorizontal = width > height;
