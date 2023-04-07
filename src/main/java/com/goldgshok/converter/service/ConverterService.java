@@ -75,10 +75,7 @@ public class ConverterService {
     }
 
     private List<String> getImageNames(File directory) {
-        String[] images = directory.list((dir, name) -> name.endsWith(".png")
-                || name.endsWith(".jpg")
-                || name.endsWith(".jpeg")
-                || name.endsWith(".bmp"));
+        String[] images = directory.list((dir, name) -> isImageFile(name));
         List<String> sortedImages = Collections.emptyList();
         if (images != null) {
             sortedImages = Arrays.stream(images)
@@ -127,5 +124,12 @@ public class ConverterService {
         }
 
         return new Dimension(newWidth, newHeight);
+    }
+
+    private boolean isImageFile(String fileName) {
+        return fileName.endsWith(".png")
+                || fileName.endsWith(".jpg")
+                || fileName.endsWith(".jpeg")
+                || fileName.endsWith(".bmp");
     }
 }
