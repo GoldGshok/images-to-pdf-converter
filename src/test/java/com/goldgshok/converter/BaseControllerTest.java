@@ -1,6 +1,7 @@
 package com.goldgshok.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.goldgshok.converter.app.Main;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +19,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
+@SpringBootTest(classes = {
+        Main.class
+})
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application-test.properties")

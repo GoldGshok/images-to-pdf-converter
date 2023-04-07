@@ -17,6 +17,7 @@ class ConverterControllerTest extends BaseControllerTest {
     @Test
     void convert_baseCase_success() {
         var request = new ConvertRequest();
+        request.se
 
         makeRequest("/api/converter/convert", request);
 

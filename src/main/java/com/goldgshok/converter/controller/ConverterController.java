@@ -23,9 +23,9 @@ public class ConverterController {
     @PostMapping("/convert")
     @Operation(summary = "Конвертация картинок в PDF файл")
     public void convert(@RequestBody ConvertRequest request) {
-        Objects.requireNonNull(request);
-        Objects.requireNonNull(request.getInputFolderPath());
-        Objects.requireNonNull(request.getOutputFolderPath());
+        Objects.requireNonNull(request, "Request is empty!");
+        Objects.requireNonNull(request.getInputFolderPath(), "Input path is empty!");
+        Objects.requireNonNull(request.getOutputFolderPath(), "Output path is empty!");
         converter.convert(request);
     }
 
