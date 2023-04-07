@@ -1,6 +1,7 @@
 package com.goldgshok.converter.service;
 
 import com.goldgshok.converter.request.ConvertRequest;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -8,11 +9,13 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.sanselan.ImageInfo;
+import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.Sanselan;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -41,29 +44,7 @@ public class ConverterService {
         if (!imageNames.isEmpty()) {
             try (var document = new PDDocument()) {
                 for (var imageName : imageNames) {
-                    var file = new File(path + imageName);
-                    var imageInfo = Sanselan.getImageInfo(file);
-                    var width = imageInfo.getWidth();
-                    var height = imageInfo.getHeight();
-                    var isHorizontal = width > height;
-
-                    var page = getPage(isHorizontal);
-                    document.addPage(page);
-
-                    Dimension pageDim;
-                    if (isHorizontal) {
-                        pageDim = new Dimension((int) PDRectangle.A4.getHeight(), (int) PDRectangle.A4.getWidth());
-                    } else {
-                        pageDim = new Dimension((int) PDRectangle.A4.getWidth(), (int) PDRectangle.A4.getHeight());
-                    }
-                    var imageDim = new Dimension(width, height);
-
-                    var scaledDim = getScaledDimension(imageDim, pageDim);
-
-                    var image = PDImageXObject.createFromFileByContent(file, document);
-                    var contentStream = new PDPageContentStream(document, page);
-                    contentStream.drawImage(image, 0, 0, scaledDim.width, scaledDim.height);
-                    contentStream.close();
+                    fillPage(document, path, imageName);
                 }
                 var fileName = String.format("%s%s.pdf", outputPath, directory.getName());
                 document.save(fileName);
@@ -72,6 +53,33 @@ public class ConverterService {
                 log.error("Error generation pdf for {}", directory.getName());
             }
         }
+    }
+
+    @SneakyThrows
+    private void fillPage(PDDocument document, String path, String imageName) {
+        var file = new File(path + imageName);
+        var imageInfo = Sanselan.getImageInfo(file);
+        var width = imageInfo.getWidth();
+        var height = imageInfo.getHeight();
+        var isHorizontal = width > height;
+
+        var page = getPage(isHorizontal);
+        document.addPage(page);
+
+        Dimension pageDim;
+        if (isHorizontal) {
+            pageDim = new Dimension((int) PDRectangle.A4.getHeight(), (int) PDRectangle.A4.getWidth());
+        } else {
+            pageDim = new Dimension((int) PDRectangle.A4.getWidth(), (int) PDRectangle.A4.getHeight());
+        }
+        var imageDim = new Dimension(width, height);
+
+        var scaledDim = getScaledDimension(imageDim, pageDim);
+
+        var image = PDImageXObject.createFromFileByContent(file, document);
+        var contentStream = new PDPageContentStream(document, page);
+        contentStream.drawImage(image, 0, 0, scaledDim.width, scaledDim.height);
+        contentStream.close();
     }
 
     private List<String> getImageNames(File directory) {
