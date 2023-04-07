@@ -99,7 +99,7 @@ public class ConverterService {
     }
 
     public int compareImageNames(String o1, String o2) {
-        int diff = o1.length() - o2.length();
+        var diff = o1.length() - o2.length();
         if (diff == 0) {
             return o1.compareTo(o2);
         } else {
