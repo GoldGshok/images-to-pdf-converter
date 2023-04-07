@@ -125,12 +125,10 @@ public class ConverterService {
             newWidth = pageWidth;
             newHeight = (newWidth * originalHeight) / originalWidth;
         }
-
         if (newHeight > pageHeight) {
             newHeight = pageHeight;
             newWidth = (newHeight * originalWidth) / originalHeight;
         }
-
         return new Dimension(newWidth, newHeight);
     }
 
