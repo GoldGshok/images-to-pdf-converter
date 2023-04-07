@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/converter")
@@ -21,6 +23,9 @@ public class ConverterController {
     @PostMapping("/convert")
     @Operation(summary = "Конвертация картинок в PDF файл")
     public void convert(@RequestBody ConvertRequest request) {
+        Objects.requireNonNull(request);
+        Objects.requireNonNull(request.getInputFolderPath());
+        Objects.requireNonNull(request.getOutputFolderPath());
         converter.convert(request);
     }
 
