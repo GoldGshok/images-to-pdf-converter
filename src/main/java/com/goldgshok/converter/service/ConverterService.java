@@ -67,7 +67,7 @@ public class ConverterService {
                 }
                 var fileName = String.format("%s%s.pdf", outputPath, directory.getName());
                 document.save(fileName);
-                log.info("File {} created", fileName);
+                log.debug("File {} created", fileName);
             } catch (Exception e) {
                 log.error("Error generation pdf for {}", directory.getName());
             }
