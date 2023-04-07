@@ -113,7 +113,7 @@ public class ConverterService {
         var pageWidth = page.width;
         var pageHeight = page.height;
 
-        int newWidth = originalWidth;
+        var newWidth = originalWidth;
         int newHeight = originalHeight;
 
         if (originalWidth > pageWidth) {
