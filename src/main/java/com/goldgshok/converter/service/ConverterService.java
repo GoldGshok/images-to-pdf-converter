@@ -30,7 +30,7 @@ public class ConverterService {
         var dirs = file.listFiles(File::isDirectory);
 
         if (dirs != null && dirs.length > 0) {
-            for (File dir : dirs) {
+            for (var dir : dirs) {
                 createPdf(dir, request.getOutputFolderPath());
             }
         } else {
