@@ -111,7 +111,7 @@ public class ConverterService {
         var originalWidth = imgSize.width;
         var originalHeight = imgSize.height;
         var pageWidth = page.width;
-        int pageHeight = page.height;
+        var pageHeight = page.height;
 
         int newWidth = originalWidth;
         int newHeight = originalHeight;
