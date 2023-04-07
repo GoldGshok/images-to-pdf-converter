@@ -43,7 +43,7 @@ public class ConverterService {
                 for (String imageName : imageNames) {
                     File file = new File(path + imageName);
                     ImageInfo imageInfo = Sanselan.getImageInfo(file);
-                    int width = imageInfo.getWidth();
+                    var width = imageInfo.getWidth();
                     int height = imageInfo.getHeight();
                     boolean isHorizontal = width > height;
 
