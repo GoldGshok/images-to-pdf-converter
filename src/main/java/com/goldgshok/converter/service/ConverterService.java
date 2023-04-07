@@ -103,7 +103,7 @@ public class ConverterService {
         return new PDPage(layout);
     }
 
-    public int compareImageNames(String o1, String o2) {
+    private int compareImageNames(String o1, String o2) {
         var diff = o1.length() - o2.length();
         if (diff == 0) {
             return o1.compareTo(o2);
@@ -112,7 +112,7 @@ public class ConverterService {
         }
     }
 
-    public static Dimension getScaledDimension(Dimension imgSize, Dimension page) {
+    private Dimension getScaledDimension(Dimension imgSize, Dimension page) {
         var originalWidth = imgSize.width;
         var originalHeight = imgSize.height;
         var pageWidth = page.width;
