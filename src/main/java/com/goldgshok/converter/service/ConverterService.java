@@ -45,7 +45,7 @@ public class ConverterService {
                     ImageInfo imageInfo = Sanselan.getImageInfo(file);
                     var width = imageInfo.getWidth();
                     var height = imageInfo.getHeight();
-                    boolean isHorizontal = width > height;
+                    var isHorizontal = width > height;
 
                     var page = getPage(isHorizontal);
                     document.addPage(page);
