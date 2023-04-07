@@ -41,7 +41,7 @@ public class ConverterService {
         if (!imageNames.isEmpty()) {
             try (var document = new PDDocument()) {
                 for (var imageName : imageNames) {
-                    File file = new File(path + imageName);
+                    var file = new File(path + imageName);
                     ImageInfo imageInfo = Sanselan.getImageInfo(file);
                     var width = imageInfo.getWidth();
                     var height = imageInfo.getHeight();
