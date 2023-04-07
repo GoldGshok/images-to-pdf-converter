@@ -121,7 +121,6 @@ public class ConverterService {
             newHeight = (newWidth * originalHeight) / originalWidth;
         }
 
-
         if (newHeight > pageHeight) {
             newHeight = pageHeight;
             newWidth = (newHeight * originalWidth) / originalHeight;
