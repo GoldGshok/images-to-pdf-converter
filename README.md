@@ -1,2 +1,2 @@
 # images-to-pdf-converter
-Конвертор изображений в pdf-файл
+Images converter to pdf file
