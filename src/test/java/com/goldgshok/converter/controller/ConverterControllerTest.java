@@ -18,7 +18,7 @@ class ConverterControllerTest extends BaseControllerTest {
     void convert_baseCase_success() {
         var request = new ConvertRequest();
         request.setInputFolderPath("123");
-        request.setInputFolderPath("123");
+        request.setOutputFolderPath("456");
 
         makeRequest("/api/converter/convert", request);
 
