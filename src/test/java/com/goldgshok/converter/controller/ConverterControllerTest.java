@@ -1,6 +1,5 @@
 package com.goldgshok.converter.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goldgshok.converter.request.ConvertRequest;
 import com.goldgshok.converter.service.ConverterService;
@@ -14,7 +13,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
-import static org.springframework.http.RequestEntity.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ConverterController.class)
